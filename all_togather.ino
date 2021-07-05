@@ -15,29 +15,28 @@ RST             D9           D8
 /* Include the RFID library */
 #include <RFID.h>
 
+#include <Ethernet.h>
+
 /* Define the DIO used for the SDA (SS) and RST (reset) pins. */
 #define SDA_DIO 9
 #define RESET_DIO 8
 /* Create an instance of the RFID library */
 RFID RC522(SDA_DIO, RESET_DIO); 
+/*RFID VALUES*/
+String readID;
 
 const int led = 13;
 const int buzzer = 40; //buzzer to arduino pin 
 bool server_is_connected = false;
-/*RFID VALUES*/
-String readID;
 
 String request = "POST /api/v1/entries/access/?card=";
 String request_type =" HTTP/1.1";
-
-#include <SPI.h>
-#include <Ethernet.h>
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
-char server[] = "192.168.0.102";    // name address for Google (using DNS)
+char server[] = "192.168.0.102";    // pc ip
 
 // Set the static IP address to use if the DHCP fails to assign
 IPAddress ip(192, 168, 0, 103);
@@ -178,7 +177,6 @@ void loop()
        if (connectToServer())
       {
         // Make a HTTP request:
-        //client.println("GET /search?q=arduino HTTP/1.1");
         String req = request + readID + request_type;
         Serial.println(req);
         client.println(req);
@@ -188,8 +186,7 @@ void loop()
         Serial.println("wait for response");
         delay(20000);
         count_bytes();
-        //if(!client.connected())
-          finish_and_calculate_data_send();
+        finish_and_calculate_data_send();
       } else {
         // if you didn't get a connection to the server:
        Serial.println("connection failed");
