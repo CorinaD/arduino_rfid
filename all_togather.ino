@@ -174,8 +174,7 @@ void loop()
     Serial.println();
     digitalWrite(led, LOW);
 
-       if (connectToServer())
-      {
+       if (connectToServer()){
         // Make a HTTP request:
         String req = request + readID + request_type;
         Serial.println(req);
